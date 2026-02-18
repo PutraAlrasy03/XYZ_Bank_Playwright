@@ -1,0 +1,38 @@
+{
+  "customers": [
+    {
+      "firstName": "Hermoine",
+      "lastName": "Granger",
+      "postCode": "12345",
+      "currency": "Dollar"
+    },
+    {
+      "firstName": "Harry",
+      "lastName": "Potter",
+      "postCode": "67890",
+      "currency": "Pound"
+    },
+    {
+      "firstName": "Ron",
+      "lastName": "Weasly",
+      "postCode": "54321",
+      "currency": "Rupee"
+    },
+    {
+      "firstName": "Albus",
+      "lastName": "Dumbledore",
+      "postCode": "98765",
+      "currency": "Dollar"
+    },
+    {
+      "firstName": "Neville",
+      "lastName": "Longbottom",
+      "postCode": "13579",
+      "currency": "Pound"
+    }
+  ],
+  "transactions": {
+    "depositAmount": 500,
+    "withdrawAmount": 400
+  }
+}
