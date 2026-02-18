@@ -232,4 +232,4 @@ For issues and questions:
 The tests are designed to work with the XYZ Bank demo application available at:
 https://www.globalsqa.com/angularJs-protractor/BankingProject
 
-**Note**: This is a demo application with limited functionality. Some features like customer deletion may not work as expected in the demo environment.
+**Note**: This is a demo application with limited functionality.
