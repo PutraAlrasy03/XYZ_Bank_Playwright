@@ -67,7 +67,61 @@ export class ManagerPage {
         if (nameCell.trim() === customerName) {
           // Click the delete button in the last column (cell 5, index 4)
           await cells[4].locator('button').click();
+          // Wait for the row to be removed
+          await this.page.waitForTimeout(5000);
           break;
+        }
+      }
+    }
+  }
+
+  async deleteCustomerDebug(customerName) {
+    console.log(`DEBUG: Starting delete for customer: ${customerName}`);
+    
+    // Search for the customer
+    await this.searchCustomer(customerName);
+    console.log('DEBUG: Search completed');
+    
+    // Get all rows
+    const rows = await this.customerRows.all();
+    console.log(`DEBUG: Found ${rows.length} rows`);
+    
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const cells = await row.locator('td').all();
+      console.log(`DEBUG: Row ${i}, cells length: ${cells.length}`);
+      
+      if (cells.length >= 5) {
+        const nameCell = await cells[0].textContent();
+        console.log(`DEBUG: Row ${i} name: "${nameCell.trim()}"`);
+        
+        if (nameCell.trim() === customerName) {
+          console.log(`DEBUG: Found matching customer in row ${i}`);
+          
+          // Get the delete button
+          const deleteButton = cells[4].locator('button');
+          const buttonExists = await deleteButton.isVisible();
+          console.log(`DEBUG: Delete button exists: ${buttonExists}`);
+          
+          if (buttonExists) {
+            console.log('DEBUG: Clicking delete button...');
+            // Try different click methods
+            try {
+              await deleteButton.click({ force: true });
+              console.log('DEBUG: Delete button clicked with force');
+            } catch (error) {
+              console.log('DEBUG: Force click failed, trying normal click');
+              await deleteButton.click();
+              console.log('DEBUG: Delete button clicked normally');
+            }
+            
+            // Wait for the row to be removed
+            await this.page.waitForTimeout(15000);
+            console.log('DEBUG: Waited for deletion');
+            break;
+          } else {
+            console.log('DEBUG: Delete button not found');
+          }
         }
       }
     }

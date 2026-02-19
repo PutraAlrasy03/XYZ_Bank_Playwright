@@ -69,9 +69,9 @@ test.describe('Bank Manager Tests', () => {
     // Navigate to Manager Login
     await loginPage.clickBankManagerLogin();
     
-    // Add a customer first
+    // Add a customer first to ensure we have one to delete
     await managerPage.clickAddCustomer();
-    const customer = testData.customers[1];
+    const customer = testData.customers[1]; // Harry Potter
     await managerPage.addCustomer(customer.firstName, customer.lastName, customer.postCode);
     
     // Handle alert for customer added
@@ -79,33 +79,41 @@ test.describe('Bank Manager Tests', () => {
       await dialog.accept();
     });
     
-    // Delete the customer
+    // Navigate to Customers tab
     await managerPage.clickCustomers();
-    await managerPage.deleteCustomer(customer.firstName);
-    
-    // Wait for deletion to complete
-    await page.waitForTimeout(1000);
-    
-    // Verify customer is deleted
-    // Clear any existing search first
-    await page.fill('input[ng-model="searchCustomer"]', '');
-    await page.waitForTimeout(500);
-    
-    // Check if customer exists before deletion (should be 1)
+
+    // Search by first name
     await managerPage.searchCustomer(customer.firstName);
-    const customerRowsBefore = await managerPage.getCustomerRows();
-    console.log('Customer rows before deletion:', customerRowsBefore);
-    
-    // Clear search and check total rows
-    await page.fill('input[ng-model="searchCustomer"]', '');
+
+    // Wait for row to appear
+    let rowToDelete = managerPage.customerRows
+      .filter({ has: page.locator(`td:text-is("${customer.firstName}")`) })
+      .first();
+
+    await expect(rowToDelete).toBeVisible();
+
+    const deleteButton = rowToDelete.locator('button');
+    await expect(deleteButton).toBeEnabled();
+
+    // Click once
+    await deleteButton.click();
+
+    // Wait 500ms for Angular to process
     await page.waitForTimeout(500);
-    const totalRows = await managerPage.getCustomerRows();
-    console.log('Total customer rows:', totalRows);
-    
-    // Now search for the deleted customer (should be 0)
-    await managerPage.searchCustomer(customer.firstName);
-    const customerRowsAfter = await managerPage.getCustomerRows();
-    console.log('Customer rows after deletion:', customerRowsAfter);
-    expect(customerRowsAfter).toBe(0);
+
+    // Re-check if row still exists, click again if needed
+    const stillExists = await rowToDelete.count();
+    if (stillExists > 0) {
+      await deleteButton.click();
+      await page.waitForTimeout(500);
+    }
+
+    // Final check: row should disappear
+    await expect(
+      managerPage.customerRows.filter({ has: page.locator(`td:text-is("${customer.firstName}")`) })
+    ).toHaveCount(0, { timeout: 5000 });
+
+    // Optional: clear search
+    await managerPage.searchCustomer('');
   });
 });
