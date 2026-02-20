@@ -221,4 +221,72 @@ test.describe('Customer Tests', () => {
     expect(balance).toBeGreaterThan(0); // Should still have some balance
   });
 
+  test('TC_CUST_10: Deposit persists after Logout & Login', async ({ page }) => {
+  // Login
+  await loginPage.clickCustomerLogin();
+  const customer = testData.customers[0];
+  await customerPage.selectCustomer(`${customer.firstName} ${customer.lastName}`);
+  await page.click('button:has-text("Login")');
+
+  // Capture balance BEFORE deposit
+  const balanceBeforeDeposit = await customerPage.getBalance();
+
+  // Deposit
+  await customerPage.clickDeposit();
+  await customerPage.deposit(testData.transactions.depositAmount);
+
+  await expect(page.locator('.error.ng-binding'))
+    .toContainText('Deposit Successful');
+
+  // Balance AFTER deposit
+  const balanceAfterDeposit = await customerPage.getBalance();
+  expect(balanceAfterDeposit)
+    .toBe(balanceBeforeDeposit + testData.transactions.depositAmount);
+
+  // Logout
+  await customerPage.clickLogout();
+
+  // Login again - navigate back to home page first
+  await loginPage.navigateToHome();
+  await loginPage.clickCustomerLogin();
+  await customerPage.selectCustomer(`${customer.firstName} ${customer.lastName}`);
+  await page.click('button:has-text("Login")');
+
+  // Balance AFTER re-login
+  const balanceAfterReLogin = await customerPage.getBalance();
+
+  // ✅ Core assertion
+  expect(balanceAfterReLogin).toBe(balanceAfterDeposit);
+});
+
+  test('TC_CUST_11: Refresh Web Check Balance', async ({ page }) => {
+    // Navigate to Customer Login and select customer
+    await loginPage.clickCustomerLogin();
+    const customer = testData.customers[0];
+    await customerPage.selectCustomer(`${customer.firstName} ${customer.lastName}`);
+    
+    // Click Login button
+    await page.click('button:has-text("Login")');
+    
+    // Check initial balance
+    const initialBalance = await customerPage.getBalance();
+    
+    // Make a deposit
+    await customerPage.clickDeposit();
+    await customerPage.deposit(testData.transactions.depositAmount);
+    
+    // Check balance after deposit
+    const balanceAfterDeposit = await customerPage.getBalance();
+    expect(balanceAfterDeposit).toBe(initialBalance + testData.transactions.depositAmount);
+    
+    // Refresh the web page
+    await page.reload();
+    
+    // Check balance after refresh (this will likely fail as the web doesn't have backend persistence)
+    const balanceAfterRefresh = await customerPage.getBalance();
+    // This assertion will likely fail as the web doesn't have backend persistence
+    // The balance should be the same as initial balance after refresh
+    expect(balanceAfterRefresh).toBe(initialBalance);
+  });
+
 });
