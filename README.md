@@ -45,6 +45,9 @@ playwright.config.js  # Playwright configuration
 - **TC_CUST_07**: Reset Transaction History
 - **TC_CUST_08**: Multiple Deposits
 - **TC_CUST_09**: Multiple Withdrawals
+- **TC_CUST_10**: Deposit persists after Logout & Login
+- **TC_CUST_11**: Refresh Web Check Balance
+
 
 #### Manager Tests (TC_MGR_*)
 - **TC_MGR_01**: Add Customer
