@@ -29,9 +29,10 @@ export class CustomerPage {
   }
 
   async clickDeposit() {
-    // Wait for the deposit button to be visible and clickable
-    await this.depositBtn.waitFor({ state: 'visible' });
-    await this.depositBtn.first().click();
+    // Wait for the main deposit button (not the submit button) to be visible and clickable
+    const mainDepositBtn = this.page.locator('button:has-text("Deposit")').first();
+    await mainDepositBtn.waitFor({ state: 'visible' });
+    await mainDepositBtn.click();
   }
 
   async clickWithdraw() {
@@ -61,6 +62,11 @@ export class CustomerPage {
   async deposit(amount) {
     await this.amountInput.fill(amount.toString());
     await this.depositSubmitBtn.click();
+    // After deposit, we need to go back to the main account page
+    // by clicking the main deposit button again to close the form
+    const mainDepositBtn = this.page.locator('button:has-text("Deposit")').first();
+    await mainDepositBtn.waitFor({ state: 'visible' });
+    await mainDepositBtn.click();
   }
 
   async withdraw(amount) {
