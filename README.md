@@ -113,11 +113,11 @@ npm test
 # Chromium
 npx playwright test --project=chromium
 
-# Firefox
-npx playwright test --project=firefox
-
-# WebKit
+# WebKit (Safari)
 npx playwright test --project=webkit
+
+# Edge (Chromium-based)
+npx playwright test --project=msedge
 ```
 
 ### Run Specific Test File
