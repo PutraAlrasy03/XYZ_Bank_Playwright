@@ -45,6 +45,9 @@ playwright.config.js  # Playwright configuration
 - **TC_CUST_07**: Reset Transaction History
 - **TC_CUST_08**: Multiple Deposits
 - **TC_CUST_09**: Multiple Withdrawals
+- **TC_CUST_10**: Deposit persists after Logout & Login
+- **TC_CUST_11**: Refresh Web Check Balance
+
 
 #### Manager Tests (TC_MGR_*)
 - **TC_MGR_01**: Add Customer
@@ -232,4 +235,4 @@ For issues and questions:
 The tests are designed to work with the XYZ Bank demo application available at:
 https://www.globalsqa.com/angularJs-protractor/BankingProject
 
-**Note**: This is a demo application with limited functionality. Some features like customer deletion may not work as expected in the demo environment.
+**Note**: This is a demo application with limited functionality.
